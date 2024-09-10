@@ -2,13 +2,13 @@
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath)
 {
+	// Read in glsl shader data
 	std::string vertexCode;
 	std::string fragmentCode;
 
 	std::ifstream vertexStream(vertexPath);
 	std::ifstream fragmentStream(fragmentPath);
 
-	// Check paths are valid
 	if (!vertexStream.is_open())
 	{
 		std::cout << "failed to open vertex stream" << std::endl;
@@ -21,7 +21,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 		return;
 	}
 
-	// Read buffer of paths and set strings
 	std::stringstream vertexSS;
 	vertexSS << vertexStream.rdbuf();
 	vertexStream.close();
@@ -32,13 +31,11 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	fragmentStream.close();
 	fragmentCode = fragmentSS.str();
 
-	// convert to C style strings
 	const char* vertexShaderCode = vertexCode.c_str();
 	const char* fragmentShaderCode = fragmentCode.c_str();
 
-	// compile shaders
+	// Create vertex and fragment shaders
 	unsigned int vertexShader, fragmentShader;
-
 
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexShaderCode, NULL);
