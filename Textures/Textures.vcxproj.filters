@@ -42,4 +42,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="WoodenTileVertexShader.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="WoodenTileFragmentShader.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
