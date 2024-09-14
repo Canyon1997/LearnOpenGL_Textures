@@ -57,7 +57,7 @@ int main()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
-	// Initialize texture
+	// Initialize textures
 	unsigned int woodenTexture;
 	glGenTextures(1, &woodenTexture);
 	glBindTexture(GL_TEXTURE_2D, woodenTexture);
@@ -69,11 +69,11 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// load texture image
-	int width, height, nrChannels;
-	unsigned char* woodenTextureData = stbi_load("TextureResources//woodencontainer.jpg", &width, &height, &nrChannels, 0);
+	int woodenWidth, woodenHeight, woodenNrChannels;
+	unsigned char* woodenTextureData = stbi_load("TextureResources//woodencontainer.jpg", &woodenWidth, &woodenHeight, &woodenNrChannels, 0);
 	if (woodenTextureData)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, woodenTextureData);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, woodenWidth, woodenHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, woodenTextureData);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
@@ -81,6 +81,31 @@ int main()
 		std::cout << "Failed to load texture" << std::endl;
 	}
 	stbi_image_free(woodenTextureData);
+
+	unsigned int happyFaceTexture;
+	glGenTextures(1, &happyFaceTexture);
+	glBindTexture(GL_TEXTURE_2D, happyFaceTexture);
+
+	// set texture wrapping/filtering options on currently bound texture object
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	int happyFaceWidth, happyFaceHeight, happyFaceNrChannels;
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* happyFaceTextureData = stbi_load("TextureResources//awesomeface.png", &happyFaceWidth, &happyFaceHeight, &happyFaceNrChannels, 0);
+	if (happyFaceTextureData)
+	{
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, happyFaceWidth, happyFaceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, happyFaceTextureData);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	stbi_image_free(happyFaceTextureData);
+
+	woodenShader.Use();
+	woodenShader.setInt("woodenTexture", 0);
+	woodenShader.setInt("happyFaceTexture", 1);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -91,7 +116,10 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// bind Texture
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, woodenTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, happyFaceTexture);
 
 		//render shader
 		woodenShader.Use();
