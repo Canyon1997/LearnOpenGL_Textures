@@ -6,9 +6,10 @@ in vec2 TexCoord;
 
 uniform sampler2D woodenTexture;
 uniform sampler2D happyFaceTexture;
+uniform float visibility;
 
 void main()
 {
-    FragColor = mix(texture(woodenTexture, TexCoord), texture(happyFaceTexture, TexCoord), 0.2);
+    FragColor = mix(texture(woodenTexture, TexCoord), texture(happyFaceTexture, TexCoord), visibility);
 
 }

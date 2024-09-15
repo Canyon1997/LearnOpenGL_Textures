@@ -66,7 +66,7 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	// load texture image
 	int woodenWidth, woodenHeight, woodenNrChannels;
@@ -90,7 +90,7 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	int happyFaceWidth, happyFaceHeight, happyFaceNrChannels;
 	stbi_set_flip_vertically_on_load(true);
@@ -107,6 +107,9 @@ int main()
 	woodenShader.setInt("woodenTexture", 0);
 	woodenShader.setInt("happyFaceTexture", 1);
 
+	float visibilityValue = 0.2;
+	woodenShader.setFloat("visibility", visibilityValue);
+	
 	while (!glfwWindowShouldClose(window))
 	{
 		ProcessInput(window);
@@ -114,6 +117,23 @@ int main()
 		//set background color
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		{
+			if (visibilityValue <= 1.0)
+			{
+				visibilityValue += 0.01;
+				woodenShader.setFloat("visibility", visibilityValue);
+			}
+		}
+		else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		{
+			if (visibilityValue >= 0)
+			{
+				visibilityValue -= 0.01;
+				woodenShader.setFloat("visibility", visibilityValue);
+			}
+		}
 
 		// bind Texture
 		glActiveTexture(GL_TEXTURE0);
